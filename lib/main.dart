@@ -64,13 +64,13 @@ class MyApp extends StatelessWidget {
           progressIndicatorTheme: ProgressIndicatorThemeData(
             color: Color(0xFFA8D5BA), // Fresh Mint for loading indicators
           ),
-          cardTheme: CardTheme(
-            color: Color(0xFFF8EDE3), // Creamy Ivory for cards
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16), // Soft rounded cards
-            ),
-          ),
+          // cardTheme: CardTheme(
+          //   color: Color(0xFFF8EDE3), // Creamy Ivory for cards
+          //   elevation: 4,
+          //   shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(16), // Soft rounded cards
+          //   ),
+          // ),
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),

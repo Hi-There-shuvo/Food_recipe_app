@@ -4,12 +4,19 @@ import 'package:food_recipe_finder/Authprovider.dart';
 import 'package:food_recipe_finder/LogInScreen.dart';
 import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmpasswordController =
       TextEditingController();
+
+  bool verificationSent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +25,7 @@ class RegisterScreen extends StatelessWidget {
         color: Color(0xFF4A7043), // Mossy hollow
         child: Center(
           child: SingleChildScrollView(
+            // Scrolling effect
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
             child: Card(
@@ -38,7 +46,9 @@ class RegisterScreen extends StatelessWidget {
                       size: 60,
                       color: Color(0xFF4A7043),
                     ),
+
                     const SizedBox(height: 12),
+
                     Text(
                       'Create Account',
                       style: TextStyle(
@@ -49,6 +59,7 @@ class RegisterScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
+
                     Text(
                       'Join Recipe Finder',
                       style: TextStyle(
@@ -59,6 +70,7 @@ class RegisterScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 28),
+
                     // Name Field
                     TextField(
                       controller: nameController,
@@ -80,7 +92,9 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 16),
+
                     // Email Field
                     TextField(
                       controller: emailController,
@@ -102,7 +116,9 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
+
                     const SizedBox(height: 16),
+
                     // Password Field
                     TextField(
                       controller: passwordController,
@@ -124,7 +140,9 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       obscureText: true,
                     ),
+
                     const SizedBox(height: 16),
+
                     // Confirm Password Field
                     TextField(
                       controller: confirmpasswordController,
@@ -146,7 +164,9 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       obscureText: true,
                     ),
+
                     const SizedBox(height: 24),
+
                     // Register Button
                     Consumer<authprovider>(
                       builder: (context, auth, child) {
@@ -172,17 +192,16 @@ class RegisterScreen extends StatelessWidget {
                                             emailController.text,
                                             passwordController.text,
                                           );
+
+                                      setState(() {
+                                        verificationSent = true;
+                                      });
+
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
-                                          content:
-                                              Text('Registration Successfully'),
-                                        ),
-                                      );
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => LogInScreen(),
+                                          content: Text(
+                                              'Verification email sent. Check your inbox.'),
                                         ),
                                       );
                                     } on FirebaseException catch (e) {
@@ -218,7 +237,62 @@ class RegisterScreen extends StatelessWidget {
                         );
                       },
                     ),
+
                     const SizedBox(height: 16),
+
+                    if (verificationSent) ...[
+                      Text(
+                        "After clicking the email verification link, click below.",
+                        style: TextStyle(
+                            fontSize: 14, color: Colors.grey.shade800),
+                        textAlign: TextAlign.center,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            final auth = context.read<authprovider>();
+                            final User = auth.user;
+
+                            if (User != null) {
+                              await auth.checkEmailVerificationAndSaveData(
+                                  User.uid,
+                                  nameController.text,
+                                  emailController.text);
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Email is verified and Data Saved'),
+                              ),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => LogInScreen()),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text("Email not verified yet. Try again."),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text("I have verified my email"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade700,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(
+                      height: 16,
+                    ),
+
                     // Login Link
                     InkWell(
                       onTap: () {

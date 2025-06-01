@@ -17,14 +17,9 @@ class authprovider with ChangeNotifier {
         email: email,
         password: password,
       );
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(credential.user!.uid)
-          .set({
-        'name': name,
-        'email': email,
-        'profilePictureUrl': null,
-      });
+
+      await credential.user?.sendEmailVerification();
+      print("Please verify your email from your inbox.");
       _isLoading = false;
       notifyListeners();
     } on FirebaseAuthException catch (e) {
@@ -35,6 +30,23 @@ class authprovider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       rethrow;
+    }
+  }
+
+  Future<void> checkEmailVerificationAndSaveData(
+      String uid, String Name, String email) async {
+    await FirebaseAuth.instance.currentUser?.reload();
+    bool isverified =
+      await FirebaseAuth.instance.currentUser?.emailVerified ?? false;
+
+    if (isverified) {
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'name': Name,
+        'email': email,
+        'profilePictureUrl': null,
+      });
+    } else {
+      throw Exception("Email is still not Valid");
     }
   }
 

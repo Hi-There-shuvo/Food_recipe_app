@@ -50,19 +50,22 @@ class RecipePage extends StatelessWidget {
                 },
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundColor: Color(0xFFF4A261), // Warm Apricot
-                    radius: 20,
-                    backgroundImage: profilePictureUrl != null
-                        ? NetworkImage(profilePictureUrl)
-                        : null,
-                    child: profilePictureUrl == null
-                        ? Icon(
-                            Icons.person,
-                            size: 20,
-                            color: Color(0xFFF8EDE3), // Creamy Ivory
-                          )
-                        : null,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: CircleAvatar(
+                      backgroundColor: Color(0xFFF4A261), // Warm Apricot
+                      radius: 20,
+                      backgroundImage: profilePictureUrl != null
+                          ? NetworkImage(profilePictureUrl)
+                          : null,
+                      child: profilePictureUrl == null
+                          ? Icon(
+                              Icons.person,
+                              size: 20,
+                              color: Color(0xFFF8EDE3), // Creamy Ivory
+                            )
+                          : null,
+                    ),
                   ),
                 ),
               );
