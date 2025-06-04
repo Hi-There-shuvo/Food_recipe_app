@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -104,24 +105,25 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     // Navigate after delay
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasData && snapshot.data != null) {
-                return RecipePage();
-              }
-              return LogInScreen();
-            },
-          ),
-        ),
-      );
+    Future.delayed(Duration(seconds: 2), () async {
+      User? user = FirebaseAuth.instance.currentUser;
+      await user?.reload();
+
+      if (user != null && user.emailVerified) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => RecipePage()),
+        );
+      } else {
+        if (user != null && !user.emailVerified) {
+          await FirebaseAuth.instance.signOut();
+
+        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LogInScreen()),
+        );
+      }
     });
   }
 
