@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -39,39 +38,32 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Recipe Finder',
         theme: ThemeData(
-          primaryColor: Color(0xFF4A7043), // Mossy Hollow
-          hintColor: Color(0xFFF4A261), // Warm Apricot
-          scaffoldBackgroundColor: Color(0xFFF8EDE3), // Creamy Ivory
+          primaryColor: Color(0xFF4A7043), 
+          hintColor: Color(0xFFF4A261), 
+          scaffoldBackgroundColor: Color(0xFFF8EDE3), 
           textTheme: TextTheme(
             headlineLarge: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF4A7043), // Mossy Hollow for headers
+              color: Color(0xFF4A7043), 
             ),
             bodyMedium: TextStyle(
               fontSize: 16,
-              color: Color(0xFF5C6B73), // Slate Gray for body text
+              color: Color(0xFF5C6B73), 
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFF4A261), // Warm Apricot for buttons
-              foregroundColor: Colors.white, // White text/icon on buttons
+              backgroundColor: Color(0xFFF4A261), 
+              foregroundColor: Colors.white, 
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // Rounded corners
+                borderRadius: BorderRadius.circular(12), 
               ),
             ),
           ),
           progressIndicatorTheme: ProgressIndicatorThemeData(
-            color: Color(0xFFA8D5BA), // Fresh Mint for loading indicators
+            color: Color(0xFFA8D5BA), 
           ),
-          // cardTheme: CardTheme(
-          //   color: Color(0xFFF8EDE3), // Creamy Ivory for cards
-          //   elevation: 4,
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(16), // Soft rounded cards
-          //   ),
-          // ),
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
@@ -80,7 +72,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Updated SplashScreen widget with Mossy Hollow color
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -136,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF4A7043), // Mossy Hollow
+      backgroundColor: Color(0xFF4A7043), 
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Center(
@@ -146,7 +138,7 @@ class _SplashScreenState extends State<SplashScreen>
               Icon(
                 Icons.restaurant_menu,
                 size: 120,
-                color: Color(0xFFF8EDE3), // Creamy Ivory for contrast
+                color: Color(0xFFF8EDE3), 
               ),
               SizedBox(height: 20),
               Text(
@@ -154,16 +146,16 @@ class _SplashScreenState extends State<SplashScreen>
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFF8EDE3), // Creamy Ivory
+                  color: Color(0xFFF8EDE3), 
                   letterSpacing: 1.2,
                   fontFamily:
-                      'Poppins', // Use a modern font (add to pubspec.yaml)
+                      'Poppins', 
                 ),
               ),
               SizedBox(height: 30),
               CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFA8D5BA), // Fresh Mint
+                  Color(0xFFA8D5BA), 
                 ),
               ),
             ],

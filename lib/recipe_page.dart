@@ -1,8 +1,10 @@
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_recipe_finder/Addrecipe.dart';
 import 'package:food_recipe_finder/Authprovider.dart';
 import 'package:food_recipe_finder/LogInScreen.dart';
+import 'package:food_recipe_finder/particular_recipe.dart';
 import 'package:food_recipe_finder/profile_screen.dart';
 import 'package:food_recipe_finder/rating_star.dart';
 import 'package:food_recipe_finder/recipe_model.dart';
@@ -15,16 +17,16 @@ class RecipePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<authprovider>().user;
     return Scaffold(
-      backgroundColor: Color(0xFFF8EDE3), // Creamy Ivory
+      backgroundColor: Color(0xFFF8EDE3),
       appBar: AppBar(
-        backgroundColor: Color(0xFF4A7043), // Mossy Hollow
+        backgroundColor: Color(0xFF4A7043),
         title: Text(
           'Recipes',
           style: TextStyle(
-            color: Color(0xFFF8EDE3), // Creamy Ivory
+            color: Color(0xFFF8EDE3),
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins', // Add to pubspec.yaml
+            fontFamily: 'Poppins',
           ),
         ),
         actions: [
@@ -53,7 +55,7 @@ class RecipePage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: CircleAvatar(
-                      backgroundColor: Color(0xFFF4A261), // Warm Apricot
+                      backgroundColor: Color(0xFFF4A261),
                       radius: 20,
                       backgroundImage: profilePictureUrl != null
                           ? NetworkImage(profilePictureUrl)
@@ -62,7 +64,7 @@ class RecipePage extends StatelessWidget {
                           ? Icon(
                               Icons.person,
                               size: 20,
-                              color: Color(0xFFF8EDE3), // Creamy Ivory
+                              color: Color(0xFFF8EDE3),
                             )
                           : null,
                     ),
@@ -72,7 +74,7 @@ class RecipePage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.logout, color: Color(0xFFF8EDE3)), // Creamy Ivory
+            icon: Icon(Icons.logout, color: Color(0xFFF8EDE3)),
             onPressed: () async {
               await context.read<authprovider>().logOut();
               Navigator.pushReplacement(
@@ -93,7 +95,7 @@ class RecipePage extends StatelessWidget {
               child: Text(
                 'Error: ${snapshot.error}',
                 style: TextStyle(
-                  color: Color(0xFFE76F51), // Soft Coral
+                  color: Color(0xFFE76F51),
                   fontSize: 16,
                 ),
               ),
@@ -103,8 +105,7 @@ class RecipePage extends StatelessWidget {
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFA8D5BA)), // Fresh Mint
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA8D5BA)),
               ),
             );
           }
@@ -122,15 +123,15 @@ class RecipePage extends StatelessWidget {
                       Icon(
                         Icons.restaurant_menu,
                         size: 80,
-                        color: Color(0xFF5C6B73), // Slate Gray
+                        color: Color(0xFF5C6B73),
                       ),
                       SizedBox(height: 16),
                       Text(
                         'No recipes available yet',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Color(0xFF5C6B73), // Slate Gray
-                          fontFamily: 'Roboto', // Add to pubspec.yaml
+                          color: Color(0xFF5C6B73),
+                          fontFamily: 'Roboto',
                         ),
                       ),
                     ],
@@ -156,18 +157,12 @@ class RecipePage extends StatelessWidget {
             );
             return;
           }
-          _showAddRecipeDialog(context);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => AddRecipePage()));
         },
         child: Icon(Icons.add, color: Color(0xFFF8EDE3)), // Creamy Ivory
         tooltip: 'Add Recipe',
       ),
-    );
-  }
-
-  void _showAddRecipeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AddRecipeDialog(),
     );
   }
 }
@@ -183,13 +178,18 @@ class RecipeCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Color(0xFFF8EDE3), // Creamy Ivory
+      color: Color(0xFFF8EDE3),
       elevation: 6,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
-          // Optionally navigate to recipe details
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ParticularRecipe(
+                        recipe: recipe,
+                      )));
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -202,31 +202,13 @@ class RecipeCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    // child: recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
-                    //     ? Image.network(
-                    //         recipe.imageUrl!,
-                    //         width: 60,
-                    //         height: 60,
-                    //         fit: BoxFit.cover,
-                    //         color: Color(0xFFF4A261).withOpacity(0.2), // Subtle Warm Apricot overlay
-                    //         colorBlendMode: BlendMode.overlay,
-                    //         errorBuilder: (context, error, stackTrace) => Container(
-                    //           width: 60,
-                    //           height: 60,
-                    //           color: Color(0xFFA8D5BA), // Fresh Mint
-                    //           child: Icon(
-                    //             Icons.food_bank,
-                    //             color: Color(0xFFF8EDE3), // Creamy Ivory
-                    //           ),
-                    //         ),
-                    //       )
                     child: Container(
                       width: 60,
                       height: 60,
-                      color: Color(0xFFA8D5BA), // Fresh Mint
+                      color: Color(0xFFA8D5BA),
                       child: Icon(
                         Icons.food_bank,
-                        color: Color(0xFFF8EDE3), // Creamy Ivory
+                        color: Color(0xFFF8EDE3),
                       ),
                     ),
                   ),
@@ -240,8 +222,7 @@ class RecipeCard extends StatelessWidget {
                         : const Stream.empty(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return Icon(Icons.error,
-                            color: Color(0xFFE76F51)); // Soft Coral
+                        return Icon(Icons.error, color: Color(0xFFE76F51));
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SizedBox(
@@ -250,7 +231,7 @@ class RecipeCard extends StatelessWidget {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFFA8D5BA)), // Fresh Mint
+                                Color(0xFFA8D5BA)),
                           ),
                         );
                       }
@@ -266,12 +247,11 @@ class RecipeCard extends StatelessWidget {
                             isFavourited
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            color: Color(0xFFF4A261), // Warm Apricot
+                            color: Color(0xFFF4A261),
                             size: 30,
                             shadows: [
                               Shadow(
-                                color: Color(0xFF5C6B73)
-                                    .withOpacity(0.3), // Slate Gray shadow
+                                color: Color(0xFF5C6B73).withOpacity(0.3),
                                 offset: Offset(1, 1),
                                 blurRadius: 2,
                               ),
@@ -283,8 +263,7 @@ class RecipeCard extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Please log in first.'),
-                                backgroundColor:
-                                    Color(0xFFE76F51), // Soft Coral
+                                backgroundColor: Color(0xFFE76F51),
                               ),
                             );
                             return;
@@ -300,8 +279,7 @@ class RecipeCard extends StatelessWidget {
                                 SnackBar(
                                   content:
                                       Text('Recipe removed from favorites!'),
-                                  backgroundColor:
-                                      Color(0xFF4A7043), // Mossy Hollow
+                                  backgroundColor: Color(0xFF4A7043),
                                 ),
                               );
                             } else {
@@ -315,8 +293,7 @@ class RecipeCard extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Recipe added to favorites!'),
-                                  backgroundColor:
-                                      Color(0xFF4A7043), // Mossy Hollow
+                                  backgroundColor: Color(0xFF4A7043),
                                 ),
                               );
                             }
@@ -324,8 +301,7 @@ class RecipeCard extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Error: $e'),
-                                backgroundColor:
-                                    Color(0xFFE76F51), // Soft Coral
+                                backgroundColor: Color(0xFFE76F51),
                               ),
                             );
                           }
@@ -338,37 +314,34 @@ class RecipeCard extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // Title & Description
+              // Title
               Text(
                 recipe.title.isEmpty ? 'No title' : recipe.title,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A7043), // Mossy Hollow
+                  color: Color(0xFF4A7043),
                   fontFamily: 'Poppins',
                 ),
               ),
               const SizedBox(height: 6),
+
+              // Description
               Text(
                 recipe.description.isEmpty
                     ? 'No description'
                     : recipe.description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF5C6B73), // Slate Gray
+                  color: Color(0xFF5C6B73),
                   fontFamily: 'Roboto',
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              const SizedBox(height: 12),
 
-              const Divider(
-                height: 20,
-                thickness: 1,
-                color: Color(0xFFA8D5BA), // Fresh Mint
-              ),
-
-              // Author & Info
+              // Submitted by
               StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
@@ -381,7 +354,7 @@ class RecipeCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
-                        color: Color(0xFF5C6B73), // Slate Gray
+                        color: Color(0xFF5C6B73),
                       ),
                     );
                   }
@@ -391,7 +364,7 @@ class RecipeCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
-                        color: Color(0xFF5C6B73), // Slate Gray
+                        color: Color(0xFF5C6B73),
                       ),
                     );
                   }
@@ -403,40 +376,18 @@ class RecipeCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
-                      color: Color(0xFF5C6B73), // Slate Gray
+                      color: Color(0xFF5C6B73),
                     ),
                   );
                 },
               ),
 
-              const SizedBox(height: 12),
-
-              // Ingredients and Calories
-              Wrap(
-                spacing: 10,
-                runSpacing: 8,
-                children: [
-                  Text(
-                    'Ingredients: ${recipe.ingredients.isEmpty ? 'None' : recipe.ingredients.join(', ')}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF5C6B73), // Slate Gray
-                      fontFamily: 'Roboto',
-                    ),
-                  ),
-                  Text(
-                    'Calories: ${recipe.calories} kcal',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF5C6B73), // Slate Gray
-                      fontFamily: 'Roboto',
-                    ),
-                  ),
-                ],
+              const Divider(
+                height: 20,
+                thickness: 1,
+                color: Color(0xFFA8D5BA),
               ),
-
               const SizedBox(height: 12),
-
               // Ratings
               Center(
                 child: StreamBuilder<QuerySnapshot>(
@@ -467,7 +418,7 @@ class RecipeCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.star,
-                          color: Color(0xFFF4A261), // Warm Apricot
+                          color: Color(0xFFF4A261),
                           size: 20,
                         ),
                         SizedBox(width: 4),
@@ -476,7 +427,7 @@ class RecipeCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF4A7043), // Mossy Hollow
+                            color: Color(0xFF4A7043),
                             fontFamily: 'Poppins',
                           ),
                         ),
@@ -485,7 +436,6 @@ class RecipeCard extends StatelessWidget {
                   },
                 ),
               ),
-
               const SizedBox(height: 12),
               RatingStars(recipeId: recipe.id),
             ],
