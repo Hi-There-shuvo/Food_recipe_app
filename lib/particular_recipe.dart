@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_recipe_finder/Authprovider.dart';
-import 'package:food_recipe_finder/Ingredient_model.dart';
 import 'package:food_recipe_finder/LogInScreen.dart';
 import 'package:food_recipe_finder/profile_screen.dart';
 import 'package:food_recipe_finder/rating_star.dart';

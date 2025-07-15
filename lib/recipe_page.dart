@@ -9,7 +9,6 @@ import 'package:food_recipe_finder/rating_star.dart';
 import 'package:food_recipe_finder/recipe_categories.dart';
 import 'package:food_recipe_finder/recipe_model.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key});

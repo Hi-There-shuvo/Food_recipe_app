@@ -5,7 +5,6 @@ import 'package:food_recipe_finder/favouritescrren.dart';
 import 'package:food_recipe_finder/particular_recipe.dart';
 import 'package:food_recipe_finder/rating_star.dart';
 import 'package:food_recipe_finder/recipe_model.dart';
-import 'package:food_recipe_finder/recipe_page.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {

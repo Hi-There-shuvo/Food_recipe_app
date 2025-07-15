@@ -19,11 +19,12 @@ class authprovider with ChangeNotifier {
       );
 
       await credential.user?.sendEmailVerification();
-      print("Please verify your email from your inbox.");
+      //print("Please verify your email from your inbox.");
       _isLoading = false;
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
+      print('$e');
       notifyListeners();
       rethrow;
     } catch (e) {
@@ -36,8 +37,7 @@ class authprovider with ChangeNotifier {
   Future<void> checkEmailVerificationAndSaveData(
       String uid, String Name, String email) async {
     await FirebaseAuth.instance.currentUser?.reload();
-    bool isverified =
-      await FirebaseAuth.instance.currentUser?.emailVerified ?? false;
+    bool isverified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
 
     if (isverified) {
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -60,6 +60,7 @@ class authprovider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       notifyListeners();
+      print('$e');
       rethrow;
     } catch (e) {
       _isLoading = false;
