@@ -19,6 +19,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final _methodController = TextEditingController();
   final _caloriesController = TextEditingController();
   final List<Map<String, TextEditingController>> _ingredientControllers = [];
+  final _mainIngridentcontroller = TextEditingController();
+  final _countrucontroller = TextEditingController();
 
   @override
   void initState() {
@@ -110,7 +112,43 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                maxLines: 3,
+                maxLines: null,
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _mainIngridentcontroller,
+                decoration: const InputDecoration(
+                  labelText: 'Main Ingredient(Like Chicken,Beef so on)',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Eneter Main Ingridient';
+                  }
+                  return null;
+                },
+                maxLines: 1,
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _countrucontroller,
+                decoration: const InputDecoration(
+                  labelText: 'Name Of Country or Cuisine',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Enter Country Name';
+                  }
+                  return null;
+                },
+                maxLines: 1,
               ),
               const SizedBox(height: 16),
 
@@ -174,7 +212,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                       IconButton(
                         icon: const Icon(
                           Icons.remove_circle,
-                          color: Color(0xFFE76F51), // Soft Coral
+                          color: Color(0xFFE76F51),
                         ),
                         onPressed: _ingredientControllers.length > 1
                             ? () => _removeIngredientField(index)
@@ -193,7 +231,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   style: TextStyle(color: Color(0xFFF8EDE3)),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF4A261), 
+                  backgroundColor: const Color(0xFFF4A261),
                 ),
               ),
               const SizedBox(height: 16),
@@ -202,12 +240,18 @@ class _AddRecipePageState extends State<AddRecipePage> {
               TextFormField(
                 controller: _methodController,
                 decoration: const InputDecoration(
-                  labelText: 'Method of Cooking',
+                  labelText: 'Process of Cooking',
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                maxLines: 5,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter Process of Cocking';
+                  }
+                  return null;
+                },
+                maxLines: null,
               ),
               const SizedBox(height: 16),
 
@@ -253,21 +297,24 @@ class _AddRecipePageState extends State<AddRecipePage> {
                           .entries
                           .map((entry) => Ingredient(
                                 name: entry.value['name']!.text.trim(),
-                                calories:
-                                    int.tryParse(entry.value['calories']!.text) ??
-                                        0,
+                                calories: int.tryParse(
+                                        entry.value['calories']!.text) ??
+                                    0,
                               ))
                           .toList();
 
                       final recipe = Recipe(
-                        id: '', 
+                        id: '',
                         userId: user.uid,
                         title: _titleController.text,
                         description: _descriptionController.text,
                         createdAt: DateTime.now(),
+                        mainingredient: _mainIngridentcontroller.text,
+                        country: _countrucontroller.text,
                         ingredients: ingredients,
-                        totalCalories: int.tryParse(_caloriesController.text) ?? 0,
-                        method: _methodController.text, 
+                        totalCalories:
+                            int.tryParse(_caloriesController.text) ?? 0,
+                        method: _methodController.text,
                       );
 
                       try {
@@ -279,7 +326,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Error: $e'),
-                            backgroundColor: const Color(0xFFE76F51), // Soft Coral
+                            backgroundColor:
+                                const Color(0xFFE76F51), // Soft Coral
                           ),
                         );
                       }

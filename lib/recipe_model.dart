@@ -7,9 +7,11 @@ class Recipe {
   final String title;
   final String description;
   final DateTime createdAt;
+  final String mainingredient;
+  final String country;
   final List<Ingredient> ingredients;
   final int totalCalories;
-  final String method; 
+  final String method;
 
   Recipe({
     required this.id,
@@ -17,6 +19,8 @@ class Recipe {
     required this.title,
     required this.description,
     required this.createdAt,
+    required this.mainingredient,
+    required this.country,
     required this.ingredients,
     required this.totalCalories,
     required this.method,
@@ -43,6 +47,8 @@ class Recipe {
       title: data['title']?.toString() ?? 'Untitled',
       description: data['description']?.toString() ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      mainingredient: data['mainingredient']?.toString() ?? '',
+      country: data['country']?.toString() ?? '',
       ingredients: ingredients,
       totalCalories: data['totalCalories'] is int
           ? data['totalCalories'] as int
@@ -57,9 +63,11 @@ class Recipe {
       'title': title,
       'description': description,
       'createdAt': Timestamp.fromDate(createdAt),
+      'mainingredient': mainingredient,
+      'country' : country,
       'ingredients': ingredients.map((e) => e.toMap()).toList(),
       'totalCalories': totalCalories,
-      'method': method, // Added
+      'method': method, 
     };
   }
 }

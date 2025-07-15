@@ -150,12 +150,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SnackBar(
                               content: Text(
                                   'This function is currently unavailable'),
-                              backgroundColor: Color(0xFFE76F51), // Soft Coral
+                              backgroundColor: Color(0xFFE76F51), 
                             ),
                           );
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: Color(0xFFF4A261), // Warm Apricot
+                          foregroundColor: Color(0xFFF4A261), 
                           textStyle: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -179,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text(
                             'Error: ${snapshot.error}',
                             style: TextStyle(
-                                color: Color(0xFF4A7043)), // Mossy Hollow
+                                color: Color(0xFF4A7043)), 
                           ),
                         );
                       }
