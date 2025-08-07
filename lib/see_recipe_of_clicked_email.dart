@@ -1,241 +1,158 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:food_recipe_finder/Authprovider.dart';
-import 'package:food_recipe_finder/LogInScreen.dart';
-import 'package:food_recipe_finder/favouritescrren.dart';
 import 'package:food_recipe_finder/particular_recipe.dart';
 import 'package:food_recipe_finder/rating_star.dart';
 import 'package:food_recipe_finder/recipe_model.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatefulWidget {
+class SeeRecipeOfClickedEmail extends StatefulWidget {
+  final String email;
+  final String userId;
+  const SeeRecipeOfClickedEmail({
+    super.key,
+    required this.email,
+    required this.userId,
+  });
+
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<SeeRecipeOfClickedEmail> createState() =>
+      _SeeRecipeOfClickedEmailState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _SeeRecipeOfClickedEmailState extends State<SeeRecipeOfClickedEmail> {
+  String? name;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  Future<void> fetchUserName() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: widget.email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          name = snapshot.docs.first['name'];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          name = "No User Found";
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        name = "Error Fetching Name";
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<authprovider>().user;
-
-    if (user == null) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Color(0xFFA8D5BA)), // Fresh Mint
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
+      backgroundColor: const Color(0xFFF8EDE3),
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        backgroundColor: const Color(0xFF4A7043),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'My Profile',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+              name ?? 'Loading...',
+              style: const TextStyle(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            Row(
-              children: [
-                InkWell(
-                  child: Icon(
-                    Icons.favorite_outline,
-                    color: Color(0xFFF4A261),
-                    size: 30,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FavouriteScreen()));
-                  },
-                ),
-                SizedBox(width: 13),
-                IconButton(
-                  icon: Icon(Icons.logout, color: Color(0xFFF8EDE3)),
-                  onPressed: () async {
-                    await context.read<authprovider>().logOut();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => LogInScreen()),
-                    );
-                  },
-                ),
-              ],
+            Text(
+              widget.email,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFFE8E8E8),
+              ),
             ),
           ],
         ),
-        backgroundColor: Color(0xFF4A7043),
-        elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.2),
       ),
-      body: Container(
-        color: Color(0xFFF8EDE3),
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .snapshots(),
-          builder: (context, userSnapshot) {
-            if (userSnapshot.hasError) {
-              return Center(
-                child: Text(
-                  'Error: ${userSnapshot.error}',
-                  style: TextStyle(color: Color(0xFF4A7043)),
-                ),
-              );
-            }
-
-            if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA8D5BA)),
-                ),
-              );
-            }
-
-            final userdata = userSnapshot.data!.data() as Map<String, dynamic>;
-            final name = userdata['name'] ?? 'Unknown';
-            final profilePictureUrl = userdata['profilePictureUrl']?.toString();
-
-            return Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Color(0xFFF4A261),
-                          backgroundImage: profilePictureUrl != null
-                              ? NetworkImage(profilePictureUrl)
-                              : null,
-                          child: profilePictureUrl == null
-                              ? Icon(
-                                  Icons.person,
-                                  size: 50,
-                                  color: Color(0xFFF8EDE3),
-                                )
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4A7043),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'This function is currently unavailable'),
-                              backgroundColor: Color(0xFFE76F51),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: Color(0xFFF4A261),
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        child: Text('Change Profile Picture'),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('recipes')
-                        .where('userId', isEqualTo: user.uid)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text(
-                            'Error: ${snapshot.error}',
-                            style: TextStyle(color: Color(0xFF4A7043)),
-                          ),
-                        );
-                      }
-
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFFA8D5BA)), // Fresh Mint
-                          ),
-                        );
-                      }
-
-                      final recipes = snapshot.data!.docs
-                          .map((doc) => Recipe.fromMap(
-                                doc.data() as Map<String, dynamic>,
-                                doc.id,
-                              ))
-                          .toList();
-
-                      // Sort recipes if ascending is enabled
-
-                      final recipeCount = recipes.length;
-
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            child: Text(
-                              'You\'ve shared $recipeCount recipe${recipeCount == 1 ? '' : 's'}',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF4A7043), // Mossy Hollow
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: recipes.isEmpty
-                                ? Center(
-                                    child: Text(
-                                      'No recipes shared yet',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF5C6B73), // Slate Gray
-                                      ),
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    itemCount: recipes.length,
-                                    itemBuilder: (context, index) {
-                                      return RecipeCard(recipe: recipes[index]);
-                                    },
-                                  ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('recipes')
+            .where('userId', isEqualTo: widget.userId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: Color(0xFF4A7043)),
+              ),
             );
-          },
-        ),
+          }
+
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color(0xFFA8D5BA)), // Fresh Mint
+              ),
+            );
+          }
+
+          final recipes = snapshot.data!.docs
+              .map((doc) => Recipe.fromMap(
+                    doc.data() as Map<String, dynamic>,
+                    doc.id,
+                  ))
+              .toList();
+
+          // Sort recipes if ascending is enabled
+
+          final recipeCount = recipes.length;
+
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'He\'se shared $recipeCount recipe${recipeCount == 1 ? '' : 's'}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF4A7043),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: recipes.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No recipes shared yet',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF5C6B73),
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: recipes.length,
+                        itemBuilder: (context, index) {
+                          return RecipeCard(recipe: recipes[index]);
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -391,56 +308,6 @@ class RecipeCard extends StatelessWidget {
                         },
                       ),
                     ],
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.deepOrangeAccent,
-                      size: 30,
-                    ),
-                    onPressed: () async {
-                      try {
-                        // Confirm deletion
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Delete Recipe'),
-                            content: Text('Are you Sure To Delete this recipe'),
-                            actions: [
-                              TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: Text('Cancel')),
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: Text('Delete'))
-                            ],
-                          ),
-                        );
-
-                        if (confirm != true) return;
-
-                        // Delete recipe from 'recipes' collection
-                        await FirebaseFirestore.instance
-                            .collection('recipes')
-                            .doc(recipe.id)
-                            .delete();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Recipe deleted successfully!'),
-                            backgroundColor: Color(0xFF4A7043),
-                          ),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed to delete recipe: $e'),
-                            backgroundColor: Color(0xFFE76F51),
-                          ),
-                        );
-                      }
-                    },
                   ),
                 ],
               ),

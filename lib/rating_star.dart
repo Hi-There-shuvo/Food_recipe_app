@@ -65,7 +65,7 @@ class _RatingStarsState extends State<RatingStars> {
             onPressed: () async {
               setState(() {
                 _rating =
-                    index + 1; // Fix: Set rating to 1-5 based on star clicked
+                    index + 1;
               });
               await _submitRating(context);
             },

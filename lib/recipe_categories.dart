@@ -44,4 +44,20 @@ class Category {
     'Russian',
     'Peruvian'
   ];
+
+  static const List<String> unit = [
+    'gram',
+    'kg',
+    'Litter',
+    'ml',
+    'piece',
+    'slice',
+    'cup',
+    'tbsp',
+  ];
+
+  static const List<String> unit1 = [
+    'Kcal',
+    'cal',
+  ];
 }

@@ -10,7 +10,7 @@ class Recipe {
   final String mainingredient;
   final String country;
   final List<Ingredient> ingredients;
-  final int totalCalories;
+  final double totalCalories;
   final String method;
 
   Recipe({
@@ -37,7 +37,8 @@ class Recipe {
     } else if (ingredientsData is String) {
       ingredients = ingredientsData
           .split(',')
-          .map((name) => Ingredient(name: name.trim(), calories: 0))
+          .map((name) => Ingredient(
+              name: name.trim(), calories: 0.0, quantity: 0.0, unit: '',unit2: ''))
           .toList();
     }
 
@@ -50,10 +51,10 @@ class Recipe {
       mainingredient: data['mainingredient']?.toString() ?? '',
       country: data['country']?.toString() ?? '',
       ingredients: ingredients,
-      totalCalories: data['totalCalories'] is int
-          ? data['totalCalories'] as int
-          : int.tryParse(data['totalCalories']?.toString() ?? '0') ?? 0,
-      method: data['method']?.toString() ?? '', // Added
+      totalCalories: (data['totalCalories'] is int)
+          ? (data['totalCalories'] as int).toDouble()
+          : (data['totalCalories'] ?? 0.0).toDouble(),
+      method: data['method']?.toString() ?? '',
     );
   }
 
@@ -64,10 +65,10 @@ class Recipe {
       'description': description,
       'createdAt': Timestamp.fromDate(createdAt),
       'mainingredient': mainingredient,
-      'country' : country,
+      'country': country,
       'ingredients': ingredients.map((e) => e.toMap()).toList(),
       'totalCalories': totalCalories,
-      'method': method, 
+      'method': method,
     };
   }
 }

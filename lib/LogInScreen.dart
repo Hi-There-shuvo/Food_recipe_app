@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_recipe_finder/forgetpasword.dart';
 import 'package:food_recipe_finder/recipe_page.dart';
 import 'package:food_recipe_finder/registerpage.dart';
 import 'package:provider/provider.dart';
@@ -145,6 +146,27 @@ class LogInScreen extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 24),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => ForgotPasswordDialog(),
+                            );
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Color(0xFF4A7043),
+                              fontWeight: FontWeight.w600,
+                              //decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+
                       // Login Button
                       Consumer<authprovider>(
                         builder: (context, auth, child) {

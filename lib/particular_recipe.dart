@@ -5,6 +5,7 @@ import 'package:food_recipe_finder/LogInScreen.dart';
 import 'package:food_recipe_finder/profile_screen.dart';
 import 'package:food_recipe_finder/rating_star.dart';
 import 'package:food_recipe_finder/recipe_model.dart';
+import 'package:food_recipe_finder/see_recipe_of_clicked_email.dart';
 import 'package:provider/provider.dart';
 
 class ParticularRecipe extends StatelessWidget {
@@ -62,22 +63,12 @@ class ParticularRecipe extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.logout, color: Color(0xFFF8EDE3)),
-            onPressed: () async {
-              await context.read<authprovider>().logOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => LogInScreen()),
-              );
-            },
-          ),
+          SizedBox(width: 16),
         ],
       ),
-      // Only the `body` part is updated for beautification
       body: SingleChildScrollView(
         child: Container(
-          color: Color(0xFFFFF8F0), // Warm beige background
+          color: Color(0xFFFFF8F0),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +81,7 @@ class ParticularRecipe extends StatelessWidget {
                     height: 220,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: Color(0xFFFFEFD5), // Light cream card
+                      color: Color(0xFFFFEFD5),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.05),
@@ -103,8 +94,7 @@ class ParticularRecipe extends StatelessWidget {
                       child: Icon(
                         Icons.food_bank,
                         size: 80,
-                        color:
-                            Color(0xFF588157).withOpacity(0.7), // Olive green
+                        color: Color(0xFF588157).withOpacity(0.7),
                       ),
                     ),
                   ),
@@ -123,8 +113,7 @@ class ParticularRecipe extends StatelessWidget {
                           : const Stream.empty(),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
-                          return Icon(Icons.error,
-                              color: Color(0xFFE63946)); // red
+                          return Icon(Icons.error, color: Color(0xFFE63946));
                         }
 
                         if (snapshot.connectionState ==
@@ -210,7 +199,7 @@ class ParticularRecipe extends StatelessWidget {
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Poppins',
-                  color: Color(0xFF333333), // Charcoal
+                  color: Color(0xFF333333),
                 ),
               ),
 
@@ -225,7 +214,7 @@ class ParticularRecipe extends StatelessWidget {
                   fontSize: 16,
                   fontFamily: 'Roboto',
                   height: 1.6,
-                  color: Color(0xFF6B7280), // Slate Gray
+                  color: Color(0xFF6B7280),
                 ),
               ),
 
@@ -271,15 +260,23 @@ class ParticularRecipe extends StatelessWidget {
                       snapshot.data!.data() as Map<String, dynamic>;
                   final email = userData['email']?.toString() ?? 'Unknown';
 
-                  return Text(
-                    'Submitted by: $email',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'Roboto',
-                      color: Color(0xFF333333),
-                    ),
-                  );
+                  return InkWell(
+                      child: Text(
+                        'Submitted by: $email',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                          fontFamily: 'Roboto',
+                          color: Color(0xFF333333),
+                        ),
+                      ),
+                      onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SeeRecipeOfClickedEmail(
+                                    email: email,
+                                    userId: recipe.userId,
+                                  ))));
                 },
               ),
 
@@ -289,61 +286,138 @@ class ParticularRecipe extends StatelessWidget {
 
               // Ingredient
 
-              Text(
-                'Ingredient',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A7043),
-                  fontFamily: 'Poppins',
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              recipe.ingredients.isEmpty
-                  ? Text(
-                      'None',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF333333),
-                        fontFamily: 'Roboto',
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: recipe.ingredients.asMap().entries.map((entry) {
-                        final ingredient = entry.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  ingredient.name,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF333333), // Slate Gray
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  '${ingredient.calories} kcal',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF5C6B73), // Slate Gray
-                                    fontFamily: 'Roboto',
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF4A261).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(6),
                     ),
+                    child: Row(
+                      children: const [
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            'Ingredient',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4A7043),
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            'Calories',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4A7043),
+                              fontFamily: 'Poppins',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            'Quantity',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4A7043),
+                              fontFamily: 'Poppins',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  recipe.ingredients.isEmpty
+                      ? const Text(
+                          'No ingredients added',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF6B7280),
+                            fontFamily: 'Roboto',
+                          ),
+                        )
+                      : Column(
+                          children:
+                              recipe.ingredients.asMap().entries.map((entry) {
+                            final ingredient = entry.value;
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(color: const Color(0xFFE5E7EB)),
+                                borderRadius: BorderRadius.circular(6),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.03),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 1),
+                                  )
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      ingredient.name,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF333333),
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      '${ingredient.calories} ${ingredient.unit2.isEmpty ? '' : ingredient.unit2}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF5C6B73),
+                                        fontFamily: 'Roboto',
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      '${ingredient.quantity} ${ingredient.unit.isEmpty ? '' : ingredient.unit}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF333333),
+                                        fontFamily: 'Roboto',
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                ],
+              ),
 
               const SizedBox(height: 12),
               // Method of Cooking
@@ -352,7 +426,7 @@ class ParticularRecipe extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A7043), // Mossy Hollow
+                  color: Color(0xFF4A7043),
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -413,7 +487,7 @@ class ParticularRecipe extends StatelessWidget {
                         ),
                         SizedBox(width: 4),
                         Text(
-                          'Average Rating: ${avgRating.toStringAsFixed(1)}',
+                          'Average Rating: ${avgRating.toStringAsFixed(1)} (${ratings.length} review)',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

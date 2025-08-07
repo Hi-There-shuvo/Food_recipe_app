@@ -30,7 +30,7 @@ class FavouriteScreen extends StatelessWidget {
         title: Text(
           'Your Favourite Recipes',
           style: TextStyle(
-            color: Color(0xFF4A7043),
+            color: Color(0xFFF8EDE3),
             fontWeight: FontWeight.bold,
           ),
         ),

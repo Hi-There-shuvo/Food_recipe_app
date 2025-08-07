@@ -99,16 +99,6 @@ class _RecipePageState extends State<RecipePage> {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: Color(0xFFF8EDE3)),
-            onPressed: () async {
-              await context.read<authprovider>().logOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => LogInScreen()),
-              );
-            },
-          ),
         ],
         elevation: 4,
         shadowColor: Colors.black.withOpacity(0.2),
@@ -129,7 +119,7 @@ class _RecipePageState extends State<RecipePage> {
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 30,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: Category.mainIngredients.length + 1,
@@ -140,9 +130,13 @@ class _RecipePageState extends State<RecipePage> {
                     ? selectedIngredient == null
                     : selectedIngredient == ingredient;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
                   child: ChoiceChip(
-                    label: Text(ingredient),
+                    label: Text(
+                      ingredient,
+                      textAlign: TextAlign.center,
+                    ),
                     selected: isSelected,
                     selectedColor: const Color(0xFF4A7043),
                     labelStyle: TextStyle(
@@ -177,7 +171,7 @@ class _RecipePageState extends State<RecipePage> {
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 30,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: Category.countries.length + 1,
@@ -440,6 +434,8 @@ class RecipeCard extends StatelessWidget {
                       final isFavourited =
                           snapshot.hasData && snapshot.data!.docs.isNotEmpty;
 
+                      // Favourite Icon Button
+
                       return IconButton(
                         icon: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
@@ -514,6 +510,9 @@ class RecipeCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+
+              //Title  Section
+
               Text(
                 recipe.title.isEmpty ? 'No title' : recipe.title,
                 style: const TextStyle(
@@ -524,6 +523,9 @@ class RecipeCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
+
+              // Descriptio Section
+
               Text(
                 recipe.description.isEmpty
                     ? 'No description'
@@ -537,6 +539,7 @@ class RecipeCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 12),
+
               StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
@@ -616,7 +619,7 @@ class RecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Rating: ${avgRating.toStringAsFixed(1)}',
+                          'Rating: ${avgRating.toStringAsFixed(1)} (${ratings.length} review)',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
